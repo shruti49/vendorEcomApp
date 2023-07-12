@@ -1,12 +1,55 @@
-import {View, Text, Image} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
+import {View, Text, Image, Alert} from 'react-native';
 import CustomInputText from '../components/CustomInputText';
 import CustomButton from '../components/CustomButton';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {firebase} from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const navigation = useNavigation();
+
+  const defaultFields = {
+    email: '',
+    password: '',
+  };
+
+  const [formFields, setFormFields] = useState(defaultFields);
+
+  const {email, password} = formFields;
+
+  const handleInput = (inputValue, inputName) => {
+    setFormFields({...formFields, [inputName]: inputValue});
+  };
+
+  const inputValidation = () => {
+    if (!email || !password) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const loginUser = () => {
+    const firestoreForDefaultApp = firebase.firestore();
+    firestoreForDefaultApp
+      .collection('vendors')
+      .where('email', '==', email)
+      .get()
+      .then(snapshot => {
+        if (snapshot.docs !== []) {
+          if (snapshot.docs[0].data().password === password)
+            goToNextScreen(snapshot.docs[0].data());
+        }
+      });
+  };
+
+  const goToNextScreen = async data => {
+    await AsyncStorage.setItem('name', data.name);
+    await AsyncStorage.setItem('userId', data.userId);
+    navigation.navigate('home');
+  };
 
   return (
     <View className="flex-1 items-center">
@@ -16,14 +59,33 @@ const Login = () => {
       />
       <View className="w-[95%] h-full items-center bg-white absolute top-48 shadow-2xl rounded-t-[40px]">
         <Text className="text-2xl font-medium mt-5 text-primary">Login</Text>
-        <CustomInputText placeholder="Enter Email" width="w-11/12"/>
-        <CustomInputText placeholder="Enter Password" width="w-11/12" />
-        <CustomButton title="Login" handlePress={() => console.log('hey')} width="w-11/12"/>
+        <CustomInputText
+          placeholder="Enter Email"
+          width="w-11/12"
+          value={email}
+          handleChange={val => handleInput(val, 'email')}
+        />
+        <CustomInputText
+          placeholder="Enter Password"
+          width="w-11/12"
+          value={password}
+          textType="password"
+          handleChange={val => handleInput(val, 'password')}
+        />
+        <CustomButton
+          title="Login"
+          handlePress={() => {
+            if (inputValidation()) loginUser();
+            else Alert.alert('Please fill the data correctly');
+          }}
+          width="w-11/12"
+        />
         <View className="items-center mt-10 flex-row">
           <Text className="text-black">Don't have an account?</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('sign-up')}>
-            <Text className="text-primary font-bold focus:text-xl">{'  '}Create One</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('sign-up')}>
+            <Text className="text-primary font-bold focus:text-xl">
+              {'  '}Create One
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

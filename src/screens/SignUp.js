@@ -63,7 +63,7 @@ const SignUp = () => {
 
   const registerVendor = () => {
     setIsVisible(true);
-    const userId = uuid.v4;
+    const id = uuid.v4();
     const firestoreForDefaultApp = firebase.firestore();
     firestoreForDefaultApp
       .collection('vendors')
@@ -71,6 +71,7 @@ const SignUp = () => {
         name: displayName,
         email: email,
         phoneNo: phoneNo,
+        userId: id,
         password: password,
       })
       .then(res => {

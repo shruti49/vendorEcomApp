@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {View, Text, StatusBar} from 'react-native';
@@ -6,8 +7,14 @@ const Splash = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    setTimeout(() => navigation.navigate('sign-up'), 2000);
+    setTimeout(() => checkAuth(), 2000);
   }, []);
+
+  const checkAuth = async () => {
+    const userId = await AsyncStorage.getItem('userId');
+    if (userId !== null) navigation.navigate('home');
+    else navigation.navigate('login');
+  };
 
   return (
     <View className="flex-1 items-center justify-center bg-primary">
