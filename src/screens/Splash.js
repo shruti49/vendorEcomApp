@@ -12,13 +12,13 @@ const Splash = () => {
 
   const checkAuth = async () => {
     const userId = await AsyncStorage.getItem('userId');
-    if (userId !== null) navigation.navigate('home');
+    if (userId !== null) navigation.navigate('AddProduct');
     else navigation.navigate('login');
   };
 
   return (
     <View className="flex-1 items-center justify-center bg-primary">
-      {/* <StatusBar className="bg-primary" barStyle={'light-content'} /> */}
+      <StatusBar className="bg-primary" barStyle={'light-content'} />
       <Text className="text-white text-3xl font-bold">Ecom Vendor App</Text>
     </View>
   );

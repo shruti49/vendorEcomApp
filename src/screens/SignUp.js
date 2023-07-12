@@ -14,7 +14,7 @@ import {Icon} from 'react-native-eva-icons';
 import {useNavigation} from '@react-navigation/native';
 import CustomInputText from '../components/CustomInputText';
 import CustomButton from '../components/CustomButton';
-// import firestore from '@react-native-firebase/firestore';
+
 import {firebase} from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
 import Loader from '../components/Loader';
