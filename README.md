@@ -1,0 +1,1 @@
+We can use Splash screen package as well
