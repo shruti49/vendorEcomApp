@@ -16,29 +16,42 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {firebase} from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
 import Loader from '../components/Loader';
 import storage from '@react-native-firebase/storage';
 
 import CustomInputText from '../components/CustomInputText';
 import CustomButton from '../components/CustomButton';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 const AddProduct = () => {
+  const navigation = useNavigation();
+
+  const route = useRoute();
+  let data = {};
+  let type = '';
+  if (route.params !== undefined) {
+    data = route.params.data;
+    type = route.params.type;
+  }
+
   const defaultFormFields = {
-    name: '',
-    description: '',
-    price: '',
-    discountPrice: '',
+    name: type === 'edit' ? data._data.name : '',
+    description: type === 'edit' ? data._data.description : '',
+    price: type === 'edit' ? data._data.price : '',
+    discountPrice: type === 'edit' ? data._data.discountPrice : '',
   };
 
   const [isVisible, setIsVisible] = useState(false);
   const [formFields, setFormFields] = useState(defaultFormFields);
-  const [inStock, setInStock] = useState(false);
+  const [inStock, setInStock] = useState(
+    type === 'edit' ? data._data.inStock : true,
+  );
   const [imageData, setImageData] = useState({
     assets: [
       {
-        uri: '',
+        uri: type === 'edit' ? data._data.productImageUrl : '',
       },
     ],
   });
@@ -46,6 +59,7 @@ const AddProduct = () => {
   const {name, description, price, discountPrice} = formFields;
 
   const handleFormFields = (inputValue, inputName) => {
+    console.log(inputValue, inputValue);
     setFormFields({...formFields, [inputName]: inputValue});
   };
 
@@ -83,12 +97,7 @@ const AddProduct = () => {
     }
   };
 
-  const saveProduct = async () => {
-    setIsVisible(true);
-    const userId = await AsyncStorage.getItem('userId');
-    const userName = await AsyncStorage.getItem('name');
-    const id = uuid.v4();
-
+  const generateImageUrl = async () => {
     // create bucket storage reference to not yet existing image
     const reference = storage().ref(imageData.assets[0].fileName);
     const pathToFile = imageData.assets[0].uri;
@@ -98,29 +107,61 @@ const AddProduct = () => {
       .ref(imageData.assets[0].fileName)
       .getDownloadURL();
     console.log(url);
+    return url;
+  };
 
-    const firestoreForDefaultApp = firebase.firestore();
-    firestoreForDefaultApp
-      .collection('products')
-      .add({
-        productId: id,
-        userId: userId,
-        userName: userName,
-        name: name,
-        description: description,
-        price: price,
-        discountPrice: discountPrice,
-        inStock: inStock,
-        productImageUrl: url,
-      })
-      .then(res => {
-        setIsVisible(false);
-        console.log(res);
-      })
-      .catch(err => {
-        setIsVisible(false);
-        console.log(err);
-      });
+  const saveProduct = async () => {
+    setIsVisible(true);
+    const userId = await AsyncStorage.getItem('userId');
+    const userName = await AsyncStorage.getItem('name');
+
+    if (type === 'edit') {
+      firestore()
+        .collection('products')
+        .doc(data._data.productId)
+        .add({
+          userId: userId,
+          userName: userName,
+          name: name,
+          description: description,
+          price: price,
+          discountPrice: discountPrice,
+          inStock: inStock,
+          productImageUrl: url,
+        })
+        .then(res => {
+          setIsVisible(false);
+          navigation.goBack();
+        })
+        .catch(err => {
+          setIsVisible(false);
+          console.log(err);
+        });
+    } else {
+      const id = uuid.v4();
+      const imageURl = generateImageUrl();
+      firestore()
+        .collection('products')
+        .add({
+          productId: id,
+          userId: userId,
+          userName: userName,
+          name: name,
+          description: description,
+          price: price,
+          discountPrice: discountPrice,
+          inStock: inStock,
+          productImageUrl: imageURl,
+        })
+        .then(res => {
+          setIsVisible(false);
+          navigation.goBack();
+        })
+        .catch(err => {
+          setIsVisible(false);
+          console.log(err);
+        });
+    }
   };
 
   return (
@@ -169,7 +210,7 @@ const AddProduct = () => {
           <CustomButton
             width="w-full"
             title="Save Product"
-            handlePress={() => {}}
+            handlePress={saveProduct}
           />
         </ScrollView>
       </KeyboardAvoidingView>

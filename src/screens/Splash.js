@@ -12,7 +12,8 @@ const Splash = () => {
 
   const checkAuth = async () => {
     const userId = await AsyncStorage.getItem('userId');
-    if (userId !== null) navigation.navigate('AddProduct');
+    console.log(userId);
+    if (userId !== null) navigation.navigate('home');
     else navigation.navigate('login');
   };
 

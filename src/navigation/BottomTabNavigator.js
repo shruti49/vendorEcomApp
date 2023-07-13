@@ -1,57 +1,56 @@
-// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {Image} from 'react-native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-// import {Icon} from 'react-native-eva-icons';
+import {Icon} from 'react-native-eva-icons';
+import AddProduct from '../screens/AddProduct';
+import Product from '../tabs/Product';
+import Order from '../tabs/Order';
 
-// import Home from '../tabs/Home';
-// import Cart from '../tabs/Cart';
-// import Search from '../tabs/Search';
-// import User from '../tabs/User';
-// import Wishlist from '../tabs/Wishlist';
+const Tab = createBottomTabNavigator();
 
-// const Tab = createBottomTabNavigator();
+const BottomTabNavigator = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarStyle: {
+          paddingBottom: 5,
+          paddingTop: 5,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+          height: 80,
+        },
+        tabBarShowLabel: false,
+        tabBarIcon: ({focused}) => {
+          let imageName;
+          let color;
+          let size;
 
-// const BottomTabNavigator = () => {
-//   return (
-//     <Tab.Navigator
-//       screenOptions={({route}) => ({
-//         tabBarStyle: {
-//           paddingBottom: 5,
-//           paddingTop: 5,
-//           borderTopLeftRadius: 20,
-//           borderTopRightRadius: 20,
-//           height: 50,
-//         },
-//         headerShown: false,
-//         tabBarIcon: ({focused, color, size}) => {
-//           let iconName;
+          if (route.name === 'Products') {
+            color = focused ? '#FF6F00' : 'black';
+            imageName = require('../../images/product.png');
+          } else if (route.name === 'AddProduct') {
+            imageName = require('../../images/plus.png');
+            size = 'w-16 h-16';
+          } else if (route.name === 'Orders') {
+            color = focused ? '#FF6F00' : 'black';
+            imageName = require('../../images/order.png');
+          }
 
-//           if (route.name === 'Home') {
-//             iconName = focused ? 'home' : 'home-outline';
-//           } else if (route.name === 'Search') {
-//             iconName = focused ? 'search' : 'search-outline';
-//           } else if (route.name === 'Cart') {
-//             iconName = focused ? 'shopping-cart' : 'shopping-cart-outline';
-//           } else if (route.name === 'Wishlist') {
-//             iconName = focused ? 'heart' : 'heart-outline';
-//           } else if (route.name === 'User') {
-//             iconName = focused ? 'person' : 'person-outline';
-//           }
+          // You can return any component that you like here!
+          return (
+            <Image
+              source={imageName}
+              className={size ? size : 'w-10 h-10'}
+              tintColor={color}
+            />
+          );
+        },
+      })}>
+      <Tab.Screen name="Products" component={Product} />
+      <Tab.Screen name="AddProduct" component={AddProduct} />
+      <Tab.Screen name="Orders" component={Order} />
+    </Tab.Navigator>
+  );
+};
 
-//           // You can return any component that you like here!
-//           return (
-//             <Icon name={iconName} width={size} height={size} fill={color} />
-//           );
-//         },
-//         tabBarActiveTintColor: '#61dafb',
-//         tabBarInactiveTintColor: '#000000',
-//       })}>
-//       <Tab.Screen name="Home" component={Home} />
-//       <Tab.Screen name="Search" component={Search} />
-//       <Tab.Screen name="Cart" component={Cart} />
-//       <Tab.Screen name="Wishlist" component={Wishlist} />
-//       <Tab.Screen name="User" component={User} />
-//     </Tab.Navigator>
-//   );
-// };
-
-// export default BottomTabNavigator;
+export default BottomTabNavigator;

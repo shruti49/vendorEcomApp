@@ -4,7 +4,7 @@ import CustomInputText from '../components/CustomInputText';
 import CustomButton from '../components/CustomButton';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {firebase} from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
@@ -32,14 +32,14 @@ const Login = () => {
   };
 
   const loginUser = () => {
-    const firestoreForDefaultApp = firebase.firestore();
-    firestoreForDefaultApp
+    firestore()
       .collection('vendors')
       .where('email', '==', email)
       .get()
       .then(snapshot => {
         if (snapshot.docs !== []) {
           if (snapshot.docs[0].data().password === password)
+          console.log(snapshot.docs[0].data());
             goToNextScreen(snapshot.docs[0].data());
         }
       });

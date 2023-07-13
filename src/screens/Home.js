@@ -21,7 +21,8 @@ const Home = () => {
             tintColor={slectedTab === 0 ? '#FF6F00' : 'black'}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AddProduct')}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AddProduct', {type: 'new'})}>
           <Image
             source={require('../../images/plus.png')}
             className="w-16 h-16"

@@ -15,7 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import CustomInputText from '../components/CustomInputText';
 import CustomButton from '../components/CustomButton';
 
-import {firebase} from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
 import Loader from '../components/Loader';
 
@@ -64,10 +64,10 @@ const SignUp = () => {
   const registerVendor = () => {
     setIsVisible(true);
     const id = uuid.v4();
-    const firestoreForDefaultApp = firebase.firestore();
-    firestoreForDefaultApp
+    firestore()
       .collection('vendors')
-      .add({
+      .doc(id)
+      .set({
         name: displayName,
         email: email,
         phoneNo: phoneNo,
