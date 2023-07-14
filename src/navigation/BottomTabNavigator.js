@@ -20,6 +20,7 @@ const BottomTabNavigator = () => {
           height: 80,
         },
         tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
         tabBarIcon: ({focused}) => {
           let imageName;
           let color;
@@ -47,7 +48,11 @@ const BottomTabNavigator = () => {
         },
       })}>
       <Tab.Screen name="Products" component={Product} />
-      <Tab.Screen name="AddProduct" component={AddProduct} />
+      <Tab.Screen
+        name="AddProduct"
+        component={AddProduct}
+        initialParams={{type: 'new'}}
+      />
       <Tab.Screen name="Orders" component={Order} />
     </Tab.Navigator>
   );

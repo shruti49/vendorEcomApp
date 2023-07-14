@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   KeyboardAvoidingView,
@@ -29,37 +29,57 @@ const AddProduct = () => {
   const navigation = useNavigation();
 
   const route = useRoute();
+
   let data = {};
   let type = '';
   if (route.params !== undefined) {
-    data = route.params.data;
-    type = route.params.type;
+    if (route.params.data !== undefined) {
+      data = route.params.data;
+    }
+    if (route.params.type !== undefined) {
+      type = route.params.type;
+    }
   }
 
   const defaultFormFields = {
-    name: type === 'edit' ? data._data.name : '',
-    description: type === 'edit' ? data._data.description : '',
-    price: type === 'edit' ? data._data.price : '',
-    discountPrice: type === 'edit' ? data._data.discountPrice : '',
+    name: type === 'edit' ? data.name : '',
+    description: type === 'edit' ? data.description : '',
+    price: type === 'edit' ? data.price : '',
   };
 
   const [isVisible, setIsVisible] = useState(false);
   const [formFields, setFormFields] = useState(defaultFormFields);
+  const [imageUrl, setImageUrl] = useState();
   const [inStock, setInStock] = useState(
-    type === 'edit' ? data._data.inStock : true,
+    type === 'edit' ? data.inStock : false,
   );
   const [imageData, setImageData] = useState({
     assets: [
       {
-        uri: type === 'edit' ? data._data.productImageUrl : '',
+        uri: type === 'edit' ? data.productImageUrl : '',
       },
     ],
   });
 
-  const {name, description, price, discountPrice} = formFields;
+  //old image uri
+  const imageUri = imageData.assets[0].uri;
+
+  const {name, description, price} = formFields;
+
+  useEffect(() => {
+    console.log("hey");
+    if (type === 'new') {
+      setInStock(false);
+      setImageData({assets: [{uri: ''}]});
+      setFormFields({
+        name: '',
+        description: '',
+        price: '',
+      });
+    }
+  }, [type]);
 
   const handleFormFields = (inputValue, inputName) => {
-    console.log(inputValue, inputValue);
     setFormFields({...formFields, [inputName]: inputValue});
   };
 
@@ -93,118 +113,83 @@ const AddProduct = () => {
   const openGallery = async () => {
     const response = await launchImageLibrary({mediaType: 'photo'});
     if (!response.didCancel) {
-      setImageData(res);
+      setImageData(response);
+      generateImageUrl(response.assets[0]);
     }
   };
 
-  const generateImageUrl = async () => {
+  const generateImageUrl = async data => {
     // create bucket storage reference to not yet existing image
-    const reference = storage().ref(imageData.assets[0].fileName);
-    const pathToFile = imageData.assets[0].uri;
+    const reference = storage().ref(data.fileName);
+    const pathToFile = data.uri;
     // uploads file
     await reference.putFile(pathToFile);
-    const url = await storage()
-      .ref(imageData.assets[0].fileName)
-      .getDownloadURL();
-    console.log(url);
-    return url;
+    const url = await storage().ref(data.fileName).getDownloadURL();
+    setImageUrl(url);
   };
 
   const saveProduct = async () => {
     setIsVisible(true);
     const userId = await AsyncStorage.getItem('userId');
     const userName = await AsyncStorage.getItem('name');
-
-    if (type === 'edit') {
-      firestore()
-        .collection('products')
-        .doc(data._data.productId)
-        .add({
-          userId: userId,
-          userName: userName,
-          name: name,
-          description: description,
-          price: price,
-          discountPrice: discountPrice,
-          inStock: inStock,
-          productImageUrl: url,
-        })
-        .then(res => {
-          setIsVisible(false);
-          navigation.goBack();
-        })
-        .catch(err => {
-          setIsVisible(false);
-          console.log(err);
-        });
-    } else {
-      const id = uuid.v4();
-      const imageURl = generateImageUrl();
-      firestore()
-        .collection('products')
-        .add({
-          productId: id,
-          userId: userId,
-          userName: userName,
-          name: name,
-          description: description,
-          price: price,
-          discountPrice: discountPrice,
-          inStock: inStock,
-          productImageUrl: imageURl,
-        })
-        .then(res => {
-          setIsVisible(false);
-          navigation.goBack();
-        })
-        .catch(err => {
-          setIsVisible(false);
-          console.log(err);
-        });
-    }
+    const id = uuid.v4();
+    firestore()
+      .collection('products')
+      .doc(type === 'edit' ? data.productId : id)
+      .set({
+        userId: userId,
+        userName: userName,
+        name: name,
+        description: description,
+        price: price,
+        inStock: inStock,
+        productImageUrl: type === 'edit' ? imageUri : imageUrl,
+      })
+      .then(res => {
+        setIsVisible(false);
+        navigation.goBack();
+      })
+      .catch(err => {
+        setIsVisible(false);
+        console.log(err);
+      });
   };
 
   return (
     <View className="flex-1 items-center">
-      <KeyboardAvoidingView className="w-11/12" behavior="padding">
+      <KeyboardAvoidingView
+        className="w-11/12 mb-4"
+        behavior="height"
+        keyboardVerticalOffset={100}>
         <ScrollView>
           <TouchableOpacity
             className="h-48 border-2 mt-7 rounded-lg justify-center items-center"
             onPress={requestCameraPermission}>
-            {imageData.uri === '' ? (
+            {imageUri === '' ? (
               <Icon name="camera" width={56} height={56} />
             ) : (
-              <Image
-                source={{uri: imageData.assets[0].uri}}
-                className="w-full h-full"
-              />
+              <Image source={{uri: imageUri}} className="w-full h-full" />
             )}
           </TouchableOpacity>
 
           <CustomInputText
             placeholder="Product Name"
             value={name}
-            handleChange={val => handleFormFields(val, name)}
+            handleChange={val => handleFormFields(val, 'name')}
           />
           <CustomInputText
             placeholder="Product Description"
             value={description}
-            handleChange={val => handleFormFields(val, description)}
+            handleChange={val => handleFormFields(val, 'description')}
           />
           <CustomInputText
             placeholder="Price"
             type="numeric"
             value={price}
-            handleChange={val => handleFormFields(val, price)}
-          />
-          <CustomInputText
-            placeholder="Discount Price"
-            type="numeric"
-            value={discountPrice}
-            handleChange={val => handleFormFields(val, discountPrice)}
+            handleChange={val => handleFormFields(val, 'price')}
           />
           <View className="flex-row mt-8 justify-between">
-            <Text className="font-semibold text-base">In Stock</Text>
+            <Text className="font-semibold text-base text-black">In Stock</Text>
             <Switch onValueChange={toggleSwitch} value={inStock} />
           </View>
           <CustomButton

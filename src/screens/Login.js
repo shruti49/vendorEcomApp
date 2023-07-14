@@ -37,10 +37,12 @@ const Login = () => {
       .where('email', '==', email)
       .get()
       .then(snapshot => {
-        if (snapshot.docs !== []) {
-          if (snapshot.docs[0].data().password === password)
-          console.log(snapshot.docs[0].data());
-            goToNextScreen(snapshot.docs[0].data());
+        if (snapshot._docs !== []) {
+          console.log(snapshot._docs[0]._data ,"login");
+          const userObj = snapshot._docs[0]._data;
+          if (userObj.password === password) {
+            goToNextScreen(userObj);
+          }
         }
       });
   };

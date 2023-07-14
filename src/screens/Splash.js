@@ -12,7 +12,7 @@ const Splash = () => {
 
   const checkAuth = async () => {
     const userId = await AsyncStorage.getItem('userId');
-    console.log(userId);
+    // console.log(userId);
     if (userId !== null) navigation.navigate('home');
     else navigation.navigate('login');
   };

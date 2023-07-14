@@ -8,6 +8,8 @@ const CustomInputText = props => {
   return (
     <View className={`border-2 rounded-lg mt-8 p-1 h-14 ${width}`}>
       <TextInput
+        //autoCorrect={false} 
+        autoComplete="off"
         placeholder={placeholder}
         onChangeText={handleChange}
         value={value}
