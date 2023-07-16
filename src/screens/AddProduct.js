@@ -67,7 +67,6 @@ const AddProduct = () => {
   const {name, description, price} = formFields;
 
   useEffect(() => {
-    console.log("hey");
     if (type === 'new') {
       setInStock(false);
       setImageData({assets: [{uri: ''}]});

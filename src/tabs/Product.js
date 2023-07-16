@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image, FlatList, TouchableOpacity} from 'react-native';
+import {View, Text, FlatList, TouchableOpacity} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
-import {Icon} from 'react-native-eva-icons';
+
+import ProductCard from '../components/ProductCard';
 
 const Product = () => {
   const navigation = useNavigation();
@@ -44,7 +45,7 @@ const Product = () => {
     return (
       <View className="flex-1 justify-center items-center">
         <TouchableOpacity
-          className=" bg-primary rounded-md shadow-2xl px-8 py-6"
+          className="bg-[#FF6F00]  rounded-md shadow-2xl px-8 py-6"
           onPress={() => navigation.navigate('AddProduct', {type: 'new'})}>
           <Text className="text-white font-semibold text-xl">Add Product</Text>
         </TouchableOpacity>
@@ -56,39 +57,8 @@ const Product = () => {
     <View className="flex-1">
       <FlatList
         data={productList}
-        renderItem={({item, index}) => {
-          const {name, description, price, productId, productImageUrl} =
-            item._data;
-          return (
-            <View className="h-24 flex-row ">
-              <Image source={{uri: productImageUrl}} className=" w-20 h-20" />
-              <View className="ml-4">
-                <Text className="font-semibold text-lg">{name}</Text>
-                <Text>{description}</Text>
-                <Text className="bg-green">INR {price}</Text>
-              </View>
-              <View>
-                <Icon
-                  name="edit"
-                  width={24}
-                  height={24}
-                  onPress={() =>
-                    navigation.navigate('AddProduct', {
-                      data: item._data,
-                      type: "edit",
-                    })
-                  }
-                />
-                <Icon
-                  name="trash-2"
-                  width={24}
-                  height={24}
-                  onPress={() => handleRemove(productId)}
-                />
-              </View>
-            </View>
-          );
-        }}
+        renderItem={({item}) => <ProductCard item={item} />}
+        keyExtractor={item => item.id}
       />
     </View>
   );

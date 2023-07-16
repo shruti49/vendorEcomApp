@@ -60,7 +60,7 @@ const Login = () => {
         className="w-full h-56"
       />
       <View className="w-[95%] h-full items-center bg-white absolute top-48 shadow-2xl rounded-t-[40px]">
-        <Text className="text-2xl font-medium mt-5 text-primary">Login</Text>
+        <Text className="text-2xl font-medium mt-5 text-[#FF6F00] ">Login</Text>
         <CustomInputText
           placeholder="Enter Email"
           width="w-11/12"
@@ -85,7 +85,7 @@ const Login = () => {
         <View className="items-center mt-10 flex-row">
           <Text className="text-black">Don't have an account?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('sign-up')}>
-            <Text className="text-primary font-bold focus:text-xl">
+            <Text className="text-[#FF6F00]  font-bold focus:text-xl">
               {'  '}Create One
             </Text>
           </TouchableOpacity>

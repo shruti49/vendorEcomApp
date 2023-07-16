@@ -97,7 +97,7 @@ const SignUp = () => {
         <Icon name="arrow-back" width={28} height={28} color={'black'} />
       </TouchableOpacity>
       <View className="w-[94%] h-full items-center bg-white absolute top-48 shadow-2xl rounded-t-[40px]">
-        <Text className="text-2xl font-medium mt-5 text-primary">Sign Up</Text>
+        <Text className="text-2xl font-medium mt-5 text-[#FF6F00] ">Sign Up</Text>
         <KeyboardAvoidingView className="w-11/12" behavior="padding">
           <ScrollView className="pb-56">
             <CustomInputText
