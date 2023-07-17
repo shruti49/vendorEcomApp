@@ -1,4 +1,5 @@
 import React from 'react';
+import {Button} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -22,13 +23,16 @@ const AppNavigator = () => {
         <Stack.Screen name="splash" component={Splash} />
         <Stack.Screen name="login" component={Login} />
         <Stack.Screen name="sign-up" component={SignUp} />
-        <Stack.Screen
+        <Stack.Screen name="home" component={BottomTabNavigator} />
+        {/* <Stack.Screen
           name="AddProduct"
           component={AddProduct}
-          options={{headerShown: true}}
-        />
-
-        <Stack.Screen name="home" component={BottomTabNavigator} />
+          options={{
+            headerLeft: () => (
+              <Icon name="back" color={black} width={24} height={24} />
+            ),
+          }}
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

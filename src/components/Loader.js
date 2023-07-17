@@ -6,7 +6,7 @@ const Loader = ({isVisible}) => {
     <Modal visible={isVisible} transparent>
       <View className="w-screen h-screen absolute justify-center items-center bg-black/40 ">
         <View className="w-20 h-20 rounded-lg justify-center items-center bg-white">
-          <ActivityIndicator size={'large'}/>
+          <ActivityIndicator size={'large'} />
         </View>
       </View>
     </Modal>

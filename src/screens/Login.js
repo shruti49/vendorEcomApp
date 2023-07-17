@@ -38,7 +38,7 @@ const Login = () => {
       .get()
       .then(snapshot => {
         if (snapshot._docs !== []) {
-          console.log(snapshot._docs[0]._data ,"login");
+          console.log(snapshot._docs[0]._data, 'login');
           const userObj = snapshot._docs[0]._data;
           if (userObj.password === password) {
             goToNextScreen(userObj);
@@ -59,7 +59,9 @@ const Login = () => {
         source={require('../../images/banner.jpg')}
         className="w-full h-56"
       />
-      <View className="w-[95%] h-full items-center bg-white absolute top-48 shadow-2xl rounded-t-[40px]">
+      <View
+        className="w-[95%] h-full items-center bg-white absolute top-48 rounded-t-[40px]"
+        style={{elevation: 2}}>
         <Text className="text-2xl font-medium mt-5 text-[#FF6F00] ">Login</Text>
         <CustomInputText
           placeholder="Enter Email"

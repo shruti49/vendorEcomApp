@@ -18,7 +18,7 @@ const CustomInputText = props => {
         className="text-black"
         placeholderTextColor="black"
         secureTextEntry={textType === 'password' ? true : false}
-       // onFocus={handleFocus}
+        // onFocus={handleFocus}
       />
     </View>
   );

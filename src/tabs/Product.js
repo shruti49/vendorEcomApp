@@ -1,5 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
@@ -9,9 +15,16 @@ import ProductCard from '../components/ProductCard';
 
 const Product = () => {
   const navigation = useNavigation();
-
+  const [refreshing, setRefreshing] = useState(false);
   const [productList, setProductList] = useState([]);
   const isFocused = useIsFocused();
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   const getProducts = async () => {
     const userId = await AsyncStorage.getItem('userId');
@@ -45,8 +58,9 @@ const Product = () => {
     return (
       <View className="flex-1 justify-center items-center">
         <TouchableOpacity
-          className="bg-[#FF6F00]  rounded-md shadow-2xl px-8 py-6"
-          onPress={() => navigation.navigate('AddProduct', {type: 'new'})}>
+          className="bg-[#FF6F00] rounded-md px-8 py-6"
+          onPress={() => navigation.navigate('AddProduct', {type: 'new'})}
+          style={{elevation: 2}}>
           <Text className="text-white font-semibold text-xl">Add Product</Text>
         </TouchableOpacity>
       </View>
@@ -59,6 +73,9 @@ const Product = () => {
         data={productList}
         renderItem={({item}) => <ProductCard item={item} />}
         keyExtractor={item => item.id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </View>
   );
