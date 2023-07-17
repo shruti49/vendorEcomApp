@@ -20,7 +20,7 @@ const BottomTabNavigator = () => {
           height: 80,
         },
         tabBarShowLabel: false,
-        tabBarHideOnKeyboard: true,
+        //tabBarHideOnKeyboard: true,
         tabBarIcon: ({focused}) => {
           let imageName;
           let color;
