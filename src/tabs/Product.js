@@ -15,16 +15,9 @@ import ProductCard from '../components/ProductCard';
 
 const Product = () => {
   const navigation = useNavigation();
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshFlatlist, setRefreshFlatList] = useState(false);
   const [productList, setProductList] = useState([]);
   const isFocused = useIsFocused();
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
 
   const getProducts = async () => {
     const userId = await AsyncStorage.getItem('userId');
@@ -33,9 +26,7 @@ const Product = () => {
       .where('userId', '==', userId)
       .get()
       .then(snapshot => {
-        if (snapshot._docs.length > 0) {
-          setProductList(snapshot._docs);
-        }
+        setProductList(snapshot._docs);
       });
   };
 
@@ -43,16 +34,6 @@ const Product = () => {
     getProducts();
   }, [isFocused]);
 
-  const handleRemove = itemId => {
-    firestore()
-      .collection('products')
-      .doc(itemId)
-      .delete()
-      .then(() => {
-        console.log('Product deleted!');
-        getProducts();
-      });
-  };
 
   if (productList.length === 0) {
     return (
@@ -67,15 +48,22 @@ const Product = () => {
     );
   }
 
+  const renderProductCard = item => (
+    <ProductCard
+      item={item}
+      getProducts={getProducts}
+      refreshFlatlist={refreshFlatlist}
+      setRefreshFlatList={setRefreshFlatList}
+    />
+  );
+
   return (
     <View className="flex-1">
       <FlatList
         data={productList}
-        renderItem={({item}) => <ProductCard item={item} />}
-        keyExtractor={item => item.id}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        renderItem={({item}) => renderProductCard(item)}
+        keyExtractor={item => item._data.id}
+        extraData={refreshFlatlist}
       />
     </View>
   );

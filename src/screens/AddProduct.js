@@ -56,7 +56,7 @@ const AddProduct = () => {
   const [imageData, setImageData] = useState({
     assets: [
       {
-        uri: type === 'edit' ? data.productImageUrl : '',
+        uri: type === 'edit' ? data.ImageUrl : '',
       },
     ],
   });
@@ -67,16 +67,17 @@ const AddProduct = () => {
   const {name, description, price} = formFields;
 
   useEffect(() => {
-    if (type === 'new') {
-      setInStock(false);
-      setImageData({assets: [{uri: ''}]});
-      setFormFields({
-        name: '',
-        description: '',
-        price: '',
-      });
-    }
-  }, [type]);
+    console.log('type');
+    // if (type === 'new') {
+    setInStock(false);
+    setImageData({assets: [{uri: ''}]});
+    setFormFields({
+      name: '',
+      description: '',
+      price: '',
+    });
+    // }
+  }, []);
 
   const handleFormFields = (inputValue, inputName) => {
     setFormFields({...formFields, [inputName]: inputValue});
@@ -131,18 +132,19 @@ const AddProduct = () => {
     setIsVisible(true);
     const userId = await AsyncStorage.getItem('userId');
     const userName = await AsyncStorage.getItem('name');
-    const id = uuid.v4();
+    const productId = uuid.v4();
     firestore()
       .collection('products')
-      .doc(type === 'edit' ? data.productId : id)
+      .doc(type === 'edit' ? data.id : productId)
       .set({
+        id: type === 'edit' ? data.id : productId,
         userId: userId,
         userName: userName,
         name: name,
         description: description,
         price: price,
         inStock: inStock,
-        productImageUrl: type === 'edit' ? imageUri : imageUrl,
+        ImageUrl: type === 'edit' ? imageUri : imageUrl,
       })
       .then(res => {
         setIsVisible(false);

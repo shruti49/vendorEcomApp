@@ -4,20 +4,31 @@ import {Icon} from 'react-native-eva-icons';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
+import firestore from '@react-native-firebase/firestore';
+
 const ProductCard = props => {
   const navigation = useNavigation();
 
-  const {name, price, description, productImageUrl, productId} =
-    props.item._data;
+  const {name, price, description, ImageUrl, id} = props.item._data;
+
+  const handleRemove = itemId => {
+    firestore()
+      .collection('products')
+      .doc(itemId)
+      .delete()
+      .then(() => {
+        console.log('Product deleted!');
+        props.setRefreshFlatList(!props.refreshFlatlist);
+        props.getProducts();
+      });
+  };
+
   return (
     <View
       className="w-11/12 mx-auto h-24 flex-row justify-between bg-white mt-4 rounded-lg p-2"
       style={{elevation: 2}}>
       <View className="flex-row">
-        <Image
-          source={{uri: productImageUrl}}
-          className="rounded-sm w-20 h-20"
-        />
+        <Image source={{uri: ImageUrl}} className="rounded-sm w-20 h-20" />
         <View className="ml-4">
           <Text className="font-semibold text-lg text-black">
             {name} - ₹ {price}
@@ -35,7 +46,7 @@ const ProductCard = props => {
           }>
           <Icon name="edit" width={24} height={24} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleRemove(productId)}>
+        <TouchableOpacity onPress={() => handleRemove(id)}>
           <Icon name="trash-2" width={24} height={24} />
         </TouchableOpacity>
       </View>
