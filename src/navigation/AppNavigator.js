@@ -24,15 +24,7 @@ const AppNavigator = () => {
         <Stack.Screen name="login" component={Login} />
         <Stack.Screen name="sign-up" component={SignUp} />
         <Stack.Screen name="home" component={BottomTabNavigator} />
-        {/* <Stack.Screen
-          name="AddProduct"
-          component={AddProduct}
-          options={{
-            headerLeft: () => (
-              <Icon name="back" color={black} width={24} height={24} />
-            ),
-          }}
-        /> */}
+        <Stack.Screen name="AddProduct" component={AddProduct} />
       </Stack.Navigator>
     </NavigationContainer>
   );

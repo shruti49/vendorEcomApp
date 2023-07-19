@@ -30,11 +30,11 @@ const AddProduct = () => {
 
   const route = useRoute();
 
-  let data = {};
+  let productId = '';
   let type = '';
   if (route.params !== undefined) {
-    if (route.params.data !== undefined) {
-      data = route.params.data;
+    if (route.params.productId !== undefined) {
+      productId = route.params.productId;
     }
     if (route.params.type !== undefined) {
       type = route.params.type;
@@ -42,21 +42,23 @@ const AddProduct = () => {
   }
 
   const defaultFormFields = {
-    name: type === 'edit' ? data.name : '',
-    description: type === 'edit' ? data.description : '',
-    price: type === 'edit' ? data.price : '',
+    name: '',
+    description: '',
+    price: '',
   };
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [productData, setProductData] = useState(null);
   const [formFields, setFormFields] = useState(defaultFormFields);
+  const {name, description, price} = formFields;
+
+  const [isVisible, setIsVisible] = useState(false);
+
   const [imageUrl, setImageUrl] = useState();
-  const [inStock, setInStock] = useState(
-    type === 'edit' ? data.inStock : false,
-  );
+  const [inStock, setInStock] = useState(true);
   const [imageData, setImageData] = useState({
     assets: [
       {
-        uri: type === 'edit' ? data.ImageUrl : '',
+        uri: '',
       },
     ],
   });
@@ -64,20 +66,46 @@ const AddProduct = () => {
   //old image uri
   const imageUri = imageData.assets[0].uri;
 
-  const {name, description, price} = formFields;
+  const getProductById = productId => {
+    firestore()
+      .collection('products')
+      .where('id', '==', productId)
+      .get()
+      .then(snapshot => {
+        setProductData(snapshot._docs[0]._data);
+      });
+  };
 
   useEffect(() => {
-    console.log('type');
-    // if (type === 'new') {
-    setInStock(false);
-    setImageData({assets: [{uri: ''}]});
+    if (productId) {
+      getProductById(productId);
+    }
+  }, [productId]);
+
+  const clearInputFields = () => {
     setFormFields({
       name: '',
       description: '',
       price: '',
     });
-    // }
-  }, []);
+    setInStock(false);
+    setImageData({assets: [{uri: ''}]});
+  };
+
+  useEffect(() => {
+    console.log(type);
+    if (productData !== null && type === 'edit') {
+      setFormFields({
+        name: productData.name,
+        description: productData.description,
+        price: productData.price,
+      });
+      setInStock(productData.inStock);
+      setImageData({assets: [{uri: productData.imageUrl}]});
+    } else {
+      clearInputFields();
+    }
+  }, [productData, type]);
 
   const handleFormFields = (inputValue, inputName) => {
     setFormFields({...formFields, [inputName]: inputValue});
@@ -132,22 +160,23 @@ const AddProduct = () => {
     setIsVisible(true);
     const userId = await AsyncStorage.getItem('userId');
     const userName = await AsyncStorage.getItem('name');
-    const productId = uuid.v4();
+    const id = uuid.v4();
     firestore()
       .collection('products')
-      .doc(type === 'edit' ? data.id : productId)
+      .doc(type === 'edit' ? productId : id)
       .set({
-        id: type === 'edit' ? data.id : productId,
+        id: type === 'edit' ? productId : id,
         userId: userId,
         userName: userName,
         name: name,
         description: description,
         price: price,
         inStock: inStock,
-        ImageUrl: type === 'edit' ? imageUri : imageUrl,
+        imageUrl: type === 'edit' ? imageUri : imageUrl,
       })
       .then(res => {
         setIsVisible(false);
+       // clearInputFields();
         navigation.goBack();
       })
       .catch(err => {

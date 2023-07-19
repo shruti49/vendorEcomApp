@@ -9,7 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 const ProductCard = props => {
   const navigation = useNavigation();
 
-  const {name, price, description, ImageUrl, id} = props.item._data;
+  const {name, price, description, imageUrl, id, inStock} = props.item._data;
 
   const handleRemove = itemId => {
     firestore()
@@ -28,19 +28,22 @@ const ProductCard = props => {
       className="w-11/12 mx-auto h-24 flex-row justify-between bg-white mt-4 rounded-lg p-2"
       style={{elevation: 2}}>
       <View className="flex-row">
-        <Image source={{uri: ImageUrl}} className="rounded-sm w-20 h-20" />
-        <View className="ml-4">
-          <Text className="font-semibold text-lg text-black">
-            {name} - ₹ {price}
-          </Text>
-          <Text className="text-black">{description}</Text>
+        <Image source={{uri: imageUrl}} className="rounded-sm w-20 h-20" />
+        <View className="flex-col ml-4 justify-between">
+          <View>
+            <Text className="font-semibold text-lg text-black">
+              {name} - ₹ {price}
+            </Text>
+            <Text className="text-black">{description}</Text>
+          </View>
+          <Text className=" text-green-900 text-xs">{inStock ? 'INSTOCK' : ''}</Text>
         </View>
       </View>
       <View className="justify-between">
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('AddProduct', {
-              data: props.item._data,
+              productId: id,
               type: 'edit',
             })
           }>
