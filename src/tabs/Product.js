@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -19,11 +19,11 @@ const Product = () => {
   const [productList, setProductList] = useState([]);
   const isFocused = useIsFocused();
 
-  const getProducts = async () => {
-    const userId = await AsyncStorage.getItem('userId');
+  const getProductsByVendorId = async () => {
+    const vendorId = await AsyncStorage.getItem('vendorId');
     firestore()
       .collection('products')
-      .where('userId', '==', userId)
+      .where('vendorId', '==', vendorId)
       .get()
       .then(snapshot => {
         setProductList(snapshot._docs);
@@ -31,9 +31,8 @@ const Product = () => {
   };
 
   useEffect(() => {
-    getProducts();
+    getProductsByVendorId();
   }, [isFocused]);
-
 
   if (productList.length === 0) {
     return (
@@ -51,7 +50,7 @@ const Product = () => {
   const renderProductCard = item => (
     <ProductCard
       item={item}
-      getProducts={getProducts}
+      getProductsByVendorId={getProductsByVendorId}
       refreshFlatlist={refreshFlatlist}
       setRefreshFlatList={setRefreshFlatList}
     />

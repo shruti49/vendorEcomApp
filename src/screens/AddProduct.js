@@ -93,7 +93,7 @@ const AddProduct = () => {
   };
 
   useEffect(() => {
-    console.log(type);
+    // console.log(type);
     if (productData !== null && type === 'edit') {
       setFormFields({
         name: productData.name,
@@ -158,16 +158,16 @@ const AddProduct = () => {
 
   const saveProduct = async () => {
     setIsVisible(true);
-    const userId = await AsyncStorage.getItem('userId');
-    const userName = await AsyncStorage.getItem('name');
+    const vendorId = await AsyncStorage.getItem('vendorId');
+    const vendorName = await AsyncStorage.getItem('name');
     const id = uuid.v4();
     firestore()
       .collection('products')
       .doc(type === 'edit' ? productId : id)
       .set({
         id: type === 'edit' ? productId : id,
-        userId: userId,
-        userName: userName,
+        vendorId: vendorId,
+        vendorName: vendorName,
         name: name,
         description: description,
         price: price,
@@ -176,7 +176,7 @@ const AddProduct = () => {
       })
       .then(res => {
         setIsVisible(false);
-       // clearInputFields();
+       clearInputFields();
         navigation.goBack();
       })
       .catch(err => {

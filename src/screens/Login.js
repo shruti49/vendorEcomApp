@@ -49,7 +49,7 @@ const Login = () => {
 
   const goToNextScreen = async data => {
     await AsyncStorage.setItem('name', data.name);
-    await AsyncStorage.setItem('userId', data.userId);
+    await AsyncStorage.setItem('vendorId', data.vendorId);
     navigation.navigate('home');
   };
 

@@ -71,7 +71,7 @@ const SignUp = () => {
         name: displayName,
         email: email,
         phoneNo: phoneNo,
-        userId: id,
+        vendorId: id,
         password: password,
       })
       .then(res => {
@@ -109,14 +109,6 @@ const SignUp = () => {
               placeholder="Enter Name"
               value={displayName}
               handleChange={val => setDisplayName(val)}
-              //   handleFocus={() => {
-              //     Keyboard.addListener('keyboardDidShow', () => {
-              //       setKeyboardStatus('Keyboard Shown');
-              //     });
-              //     Keyboard.addListener('keyboardDidHide', () => {
-              //       setKeyboardStatus('Keyboard Hidden');
-              //     });
-              //   }}
             />
             <CustomInputText
               placeholder="Enter Email"
@@ -138,7 +130,6 @@ const SignUp = () => {
             <CustomInputText
               placeholder="Enter Confirm Password"
               value={confirmPassword}
-              textType="password"
               handleChange={val => setConfirmPassword(val)}
             />
             <CustomButton

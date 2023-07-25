@@ -19,7 +19,7 @@ const ProductCard = props => {
       .then(() => {
         console.log('Product deleted!');
         props.setRefreshFlatList(!props.refreshFlatlist);
-        props.getProducts();
+        props.getProductsByVendorId();
       });
   };
 
@@ -36,7 +36,7 @@ const ProductCard = props => {
             </Text>
             <Text className="text-black">{description}</Text>
           </View>
-          <Text className=" text-green-900 text-xs">{inStock ? 'INSTOCK' : ''}</Text>
+          <Text className="text-green-900 text-xs">{inStock ? 'INSTOCK' : ''}</Text>
         </View>
       </View>
       <View className="justify-between">
