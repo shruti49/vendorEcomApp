@@ -9,7 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 const ProductCard = props => {
   const navigation = useNavigation();
 
-  const {name, price, description, imageUrl, id, inStock} = props.item._data;
+  const {productName, productPrice, productDescription, productImageUrl, productId, inStock} = props.item._data;
 
   const handleRemove = itemId => {
     firestore()
@@ -28,13 +28,13 @@ const ProductCard = props => {
       className="w-11/12 mx-auto h-24 flex-row justify-between bg-white mt-4 rounded-lg p-2"
       style={{elevation: 2}}>
       <View className="flex-row">
-        <Image source={{uri: imageUrl}} className="rounded-sm w-20 h-20" />
+        <Image source={{uri: productImageUrl}} className="rounded-sm w-20 h-20" />
         <View className="flex-col ml-4 justify-between">
           <View>
             <Text className="font-semibold text-lg text-black">
-              {name} - ₹ {price}
+              {productName} - ₹ {productPrice}
             </Text>
-            <Text className="text-black">{description}</Text>
+            <Text className="text-black">{productDescription}</Text>
           </View>
           <Text className="text-green-900 text-xs">{inStock ? 'INSTOCK' : ''}</Text>
         </View>
@@ -43,13 +43,13 @@ const ProductCard = props => {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('AddProduct', {
-              productId: id,
+              productId: productId,
               type: 'edit',
             })
           }>
           <Icon name="edit" width={24} height={24} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleRemove(id)}>
+        <TouchableOpacity onPress={() => handleRemove(productId)}>
           <Icon name="trash-2" width={24} height={24} />
         </TouchableOpacity>
       </View>

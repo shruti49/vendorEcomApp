@@ -61,7 +61,7 @@ const Product = () => {
       <FlatList
         data={productList}
         renderItem={({item}) => renderProductCard(item)}
-        keyExtractor={item => item._data.id}
+        keyExtractor={item => item._data.productId}
         extraData={refreshFlatlist}
       />
     </View>

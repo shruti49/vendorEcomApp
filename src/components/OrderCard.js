@@ -30,15 +30,15 @@ const OrderCard = ({
           <View className="flex-row justify-between items-end">
             <View className="flex-row">
               <Image
-                source={{uri: cartItem.itemData.imageUrl}}
+                source={{uri: cartItem.itemData.productImageUrl}}
                 className="rounded-sm w-20 h-20"
               />
               <View className="ml-4">
                 <Text className="font-semibold text-lg text-black">
-                  {cartItem.itemData.name}
+                  {cartItem.itemData.productName}
                 </Text>
                 <Text className="text-black">
-                  {cartItem.itemData.description}
+                  {cartItem.itemData.productDescription}
                 </Text>
               </View>
             </View>

@@ -69,7 +69,7 @@ const AddProduct = () => {
   const getProductById = productId => {
     firestore()
       .collection('products')
-      .where('id', '==', productId)
+      .where('productId', '==', productId)
       .get()
       .then(snapshot => {
         setProductData(snapshot._docs[0]._data);
@@ -96,12 +96,12 @@ const AddProduct = () => {
     // console.log(type);
     if (productData !== null && type === 'edit') {
       setFormFields({
-        name: productData.name,
-        description: productData.description,
-        price: productData.price,
+        name: productData.productName,
+        description: productData.productDescription,
+        price: productData.productPrice,
       });
       setInStock(productData.inStock);
-      setImageData({assets: [{uri: productData.imageUrl}]});
+      setImageData({assets: [{uri: productData.productImageUrl}]});
     } else {
       clearInputFields();
     }
@@ -165,18 +165,19 @@ const AddProduct = () => {
       .collection('products')
       .doc(type === 'edit' ? productId : id)
       .set({
-        id: type === 'edit' ? productId : id,
+        productId: type === 'edit' ? productId : id,
         vendorId: vendorId,
         vendorName: vendorName,
-        name: name,
-        description: description,
-        price: price,
+        productName: name,
+        productDescription: description,
+        productPrice: price,
         inStock: inStock,
-        imageUrl: type === 'edit' ? imageUri : imageUrl,
+        productImageUrl: type === 'edit' ? imageUri : imageUrl,
+        isLiked: false,
       })
       .then(res => {
         setIsVisible(false);
-       clearInputFields();
+        clearInputFields();
         navigation.goBack();
       })
       .catch(err => {

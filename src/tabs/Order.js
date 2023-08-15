@@ -18,7 +18,7 @@ const Order = () => {
   const {updateOrderStatus, fetchOrders, orderList} = useContext(OrderContext);
   const [refreshFlatlist, setRefreshFlatList] = useState(false);
   const orderStatusList = ['Dispatched', 'Placed', 'Cancelled', 'Rejected'];
- 
+
   useEffect(() => {
     fetchOrders();
   }, [isFocused, refreshFlatlist]);
@@ -81,6 +81,7 @@ const Order = () => {
             </TouchableOpacity>
             {orderStatusList.map(status => (
               <TouchableOpacity
+                key={status}
                 className="border-b-2 p-2 border-gray-400"
                 onPress={() => {
                   updateOrderStatus(status);
