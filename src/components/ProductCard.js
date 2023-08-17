@@ -26,7 +26,7 @@ const ProductCard = props => {
   return (
     <View
       className="w-11/12 mx-auto h-24 flex-row justify-between bg-white mt-4 rounded-lg p-2"
-      style={{elevation: 2}}>
+      style={{elevation: 3}}>
       <View className="flex-row">
         <Image source={{uri: productImageUrl}} className="rounded-sm w-20 h-20" />
         <View className="flex-col ml-4 justify-between">

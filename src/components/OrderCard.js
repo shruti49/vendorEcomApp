@@ -26,31 +26,36 @@ const OrderCard = ({
         <View
           className="w-11/12 mx-auto mb-4 bg-white rounded-lg p-2"
           style={{elevation: 5}}
-          key={cartItem.itemId}>
-          <View className="flex-row justify-between items-end">
+          key={cartItem.cartItemId}>
+          <View className="flex-row justify-between">
             <View className="flex-row">
               <Image
-                source={{uri: cartItem.itemData.productImageUrl}}
+                source={{uri: cartItem.cartItemData.productImageUrl}}
                 className="rounded-sm w-20 h-20"
               />
               <View className="ml-4">
                 <Text className="font-semibold text-lg text-black">
-                  {cartItem.itemData.productName}
+                  {cartItem.cartItemData.productName}
                 </Text>
                 <Text className="text-black">
-                  {cartItem.itemData.productDescription}
+                  {cartItem.cartItemData.productDescription}
                 </Text>
               </View>
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                setOrderId(orderId);
-                handleBottomSheetPress();
-              }}>
-              <Text className="bg-[#FF6F00] text-bold text-md text-white p-2 rounded-md">
-                Order {status}
+            <View className="justify-between">
+              <Text className="text-black font-semibold text-base self-end">
+                Quantity: {cartItem.quantity}
               </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setOrderId(orderId);
+                  handleBottomSheetPress();
+                }}>
+                <Text className="bg-[#FF6F00] text-bold text-md text-white p-2 rounded-md">
+                  Order {status}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       ))}
