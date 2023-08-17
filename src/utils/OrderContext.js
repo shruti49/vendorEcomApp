@@ -1,5 +1,6 @@
 import {createContext, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const OrderContext = createContext();
 
@@ -21,19 +22,28 @@ export const OrderProvider = ({children}) => {
       .catch(err => console.log(err));
   };
 
-  const fetchOrders = () => {
+  const fetchOrders = async () => {
+    //add indicator
+    //get user id from storage
+    const vendorId = await AsyncStorage.getItem('vendorId');
     firestore()
       .collection('orders')
       .get()
       .then(snapshot => {
         if (snapshot.docs.length > 0) {
-          let cartItems = [];
-          snapshot.docs.map(item => {
-            cartItems.push(item._data);
+          let orders = [];
+          snapshot.docs.map(order => {
+            orders.push(order._data);
           });
-          if (cartItems.length > 0) {
-            setOrderList(cartItems);
+          let filteredOrders = [];
+          for (let i = 0; i < orders.length; i++) {
+            for (let j = 0; j < orders[i].cartItems.length; j++) {
+              if (orders[i].cartItems[j].cartItemData.vendorId === vendorId) {
+                filteredOrders.push(orders[i]);
+              }
+            }
           }
+          setOrderList(filteredOrders);
         }
       });
   };

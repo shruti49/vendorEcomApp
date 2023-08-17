@@ -93,7 +93,6 @@ const AddProduct = () => {
   };
 
   useEffect(() => {
-    // console.log(type);
     if (productData !== null && type === 'edit') {
       setFormFields({
         name: productData.productName,

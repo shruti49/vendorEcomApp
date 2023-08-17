@@ -38,7 +38,6 @@ const Login = () => {
       .get()
       .then(snapshot => {
         if (snapshot._docs !== []) {
-          console.log(snapshot._docs[0]._data, 'login');
           const userObj = snapshot._docs[0]._data;
           if (userObj.password === password) {
             goToNextScreen(userObj);
